@@ -2,18 +2,21 @@ from abc import ABCMeta
 from abc import abstractmethod
 from django import forms
 from django.core.exceptions import ValidationError
+import six
 
 from richenum import EnumLookupError
 
+CooperativeMetaBases = [ABCMeta]
 
 try:
     from django.forms.fields import RenameFieldMethods
+    CooperativeMetaBases.append(RenameFieldMethods)
 except ImportError:
-    # Fallback for Django versions < 1.8
-    RenameFieldMethods = object
+    # Django versions < 1.8
+    pass
 
 
-class CooperativeMeta(ABCMeta, RenameFieldMethods):
+class CooperativeMeta(six.with_metaclass(type, *CooperativeMetaBases)):
     pass
 
 
